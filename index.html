@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)file:///C:/Users/thiha/Downloads/Telegram%20Desktop/TMS.html -->
+<html lang="en"><head><meta charset="utf-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Mobile Service Toolkit</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --ink: #f4f8ff;
+            --muted: #a7b5ca;
+            --panel: rgba(14, 24, 42, 0.58);
+            --line: rgba(255, 255, 255, 0.16);
+            --accent: #70f0d0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background:
+                radial-gradient(ellipse at 18% 12%, rgba(25, 194, 176, 0.2), transparent 35%),
+                radial-gradient(ellipse at 86% 82%, rgba(118, 89, 255, 0.2), transparent 38%),
+                linear-gradient(145deg, #070d1b, #111a31 52%, #090f20);
+            color: var(--ink);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            height: 100dvh;
+            padding: max(28px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+            overflow: hidden;
+            overscroll-behavior: none;
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            width: 390px;
+            height: 390px;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.28;
+            pointer-events: none;
+        }
+
+        body::before {
+            background: #14d7c0;
+            top: -190px;
+            left: -130px;
+        }
+
+        body::after {
+            background: #785dff;
+            right: -180px;
+            bottom: -200px;
+        }
+
+        .container {
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            width: min(100%, 560px);
+            max-height: calc(100dvh - 56px);
+            display: flex;
+            flex-direction: column;
+            background: var(--panel);
+            padding: clamp(24px, 5vw, 42px);
+            border: 1px solid var(--line);
+            border-radius: 30px;
+            box-shadow: 0 32px 90px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            -webkit-backdrop-filter: blur(30px) saturate(155%);
+            backdrop-filter: blur(30px) saturate(155%);
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.11), transparent 34%, transparent 70%, rgba(255, 255, 255, 0.035));
+            pointer-events: none;
+        }
+
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-mark {
+            display: grid;
+            place-items: center;
+            width: 54px;
+            height: 54px;
+            flex: 0 0 54px;
+            color: #07111f;
+            background: linear-gradient(145deg, #b0ffe9, #4bd9c1 58%, #35aede);
+            border: 1px solid rgba(255, 255, 255, 0.56);
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(52, 211, 180, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        .logo-mark svg {
+            width: 31px;
+            height: 31px;
+        }
+
+        .brand-name {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+        }
+
+        .brand-subtitle {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
+            color: #a8ffe8;
+            background: rgba(100, 230, 197, 0.09);
+            border: 1px solid rgba(100, 230, 197, 0.3);
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            white-space: nowrap;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        h1 {
+            color: transparent;
+            background: linear-gradient(100deg, #ffffff 12%, #b9f8ee 70%, #a9bfff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            font-size: clamp(24px, 5vw, 34px);
+            line-height: 1.1;
+            margin-bottom: 10px;
+            letter-spacing: -0.8px;
+        }
+
+        .section-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 13px;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+        }
+
+        .section-label span:last-child {
+            color: var(--accent);
+            letter-spacing: 0;
+        }
+
+        .button-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 0;
+            flex: 1;
+            overflow-y: auto;
+            padding: 2px 5px 2px 0;
+            overscroll-behavior: contain;
+            touch-action: pan-y;
+        }
+
+        .button-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .button-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+        .button-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(112, 240, 208, 0.65);
+        }
+
+        .tool-btn {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            width: 100%;
+            min-height: 60px;
+            padding: 10px 14px 10px 11px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #f7f9ff;
+            text-decoration: none;
+            border-radius: 17px;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.055);
+            text-align: left;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.09);
+            -webkit-backdrop-filter: blur(16px) saturate(135%);
+            backdrop-filter: blur(16px) saturate(135%);
+        }
+
+        @supports (background: color-mix(in srgb, white, transparent)) {
+            .tool-btn {
+                background: linear-gradient(110deg, color-mix(in srgb, var(--tool-color) 23%, transparent), rgba(255, 255, 255, 0.045) 72%);
+                border-color: color-mix(in srgb, var(--tool-color) 30%, rgba(255, 255, 255, 0.16));
+            }
+        }
+
+        .tool-icon {
+            display: grid;
+            place-items: center;
+            width: 37px;
+            height: 37px;
+            flex: 0 0 37px;
+            color: var(--tool-color, #fff);
+            background: rgba(255, 255, 255, 0.075);
+            border: 1px solid rgba(255, 255, 255, 0.17);
+            border-radius: 12px;
+            font-size: 17px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        }
+
+        .tool-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tool-arrow {
+            color: rgba(255, 255, 255, 0.58);
+            font-size: 20px;
+            line-height: 1;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        .tool-btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.34);
+            box-shadow: 0 13px 28px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+        }
+
+        .tool-btn:hover .tool-arrow {
+            color: var(--accent);
+            transform: translateX(3px);
+        }
+
+        .tool-btn:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 3px;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                align-items: flex-start;
+                padding-top: max(18px, env(safe-area-inset-top));
+                padding-bottom: max(18px, env(safe-area-inset-bottom));
+            }
+
+            .container {
+                border-radius: 20px;
+                padding: 24px 18px;
+                max-height: calc(100dvh - 36px);
+            }
+
+            .status-badge {
+                padding: 6px 8px;
+                font-size: 9px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="brand-row">
+        <div class="brand">
+            <div class="logo-mark" aria-label="Mobile Service Toolkit logo">
+                <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect x="7" y="3" width="14" height="25" rx="3.5" stroke="currentColor" stroke-width="2.5"/>
+                    <path d="M11 7h6M13 24h2M20 18l3.2-3.2 2.5 2.5-3.2 3.2-1.8.5-.5-1.8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div>
+                <div class="brand-name">MOBILE SERVICE</div>
+                <div class="brand-subtitle">Professional field toolkit</div>
+            </div>
+        </div>
+        <div class="status-badge"><span class="status-dot"></span> ONLINE</div>
+    </div>
+    <h1>Mobile Service Toolkit</h1>
+    <div class="section-label"><span>Quick access tools</span><span id="tool-count">14 resources</span></div>
+    <div class="button-list" id="tools-container"></div>
+    <noscript>
+        <div class="button-list fallback-tools">
+            <a href="https://www.mobileseaservice.net/" class="tool-btn" style="--tool-color: #0078D7"><span class="tool-icon">M</span><span class="tool-name">Mobiilesea Tool</span><span class="tool-arrow">›</span></a>
+            <a href="https://samfw.com/" class="tool-btn" style="--tool-color: #28A745"><span class="tool-icon">S</span><span class="tool-name">Samsung Tool</span><span class="tool-arrow">›</span></a>
+            <a href="https://ipsw.me" class="tool-btn" style="--tool-color: #DC3545"><span class="tool-icon">I</span><span class="tool-name">IOS firmware</span><span class="tool-arrow">›</span></a>
+            <a href="https://www.huaweiflash.com/" class="tool-btn" style="--tool-color: #FFC107"><span class="tool-icon">H</span><span class="tool-name">Huawei Tool</span><span class="tool-arrow">›</span></a>
+            <a href="https://unlocktool.net/" class="tool-btn" style="--tool-color: #17A2B8"><span class="tool-icon">U</span><span class="tool-name">Unlock Tool</span><span class="tool-arrow">›</span></a>
+            <a href="https://spflashtool.com/" class="tool-btn" style="--tool-color: #6F42C1"><span class="tool-icon">S</span><span class="tool-name">SP Flash Tool</span><span class="tool-arrow">›</span></a>
+            <a href="https://odindownload.com/" class="tool-btn" style="--tool-color: #0078D7"><span class="tool-icon">O</span><span class="tool-name">Odin Tool</span><span class="tool-arrow">›</span></a>
+            <a href="https://xiaomibdteam.net/" class="tool-btn" style="--tool-color: #28A745"><span class="tool-icon">B</span><span class="tool-name">BD Tool</span><span class="tool-arrow">›</span></a>
+            <a href="https://www.ceir.gov.mm/" class="tool-btn" style="--tool-color: #DC3545"><span class="tool-icon">C</span><span class="tool-name">CEIR Website</span><span class="tool-arrow">›</span></a>
+            <a href="https://firmwarefile.com/" class="tool-btn" style="--tool-color: #FFC107"><span class="tool-icon">F</span><span class="tool-name">Firmware Download</span><span class="tool-arrow">›</span></a>
+            <a href="https://www.ttagsm.com/" class="tool-btn" style="--tool-color: #0078D7"><span class="tool-icon">R</span><span class="tool-name">Reseller</span><span class="tool-arrow">›</span></a>
+            <a href="https://iunlocker.com/check_icloud.php" class="tool-btn" style="--tool-color: #00d70b"><span class="tool-icon">i</span><span class="tool-name">iCloud Check</span><span class="tool-arrow">›</span></a>
+            <a href="https://www.egsmtool.com/testpoints" class="tool-btn" style="--tool-color: #17A2B8"><span class="tool-icon">A</span><span class="tool-name">All Model EDL test point</span><span class="tool-arrow">›</span></a>
+        
+		</div>
+    </noscript>
+</div>
+
+<script>
+(() => {
+    const tools = [
+        { name: "Mobiilesea Tool", url: "https://www.mobileseaservice.net/", color: "#0078D7" },
+        { name: "Samsung Tool", url: "https://samfw.com/", color: "#28A745" },
+        { name: "Xiaomifirmware ", url: "https://mifirm.net/", color: "#DC3545" },
+        { name: "Huawei Tool", url: "https://www.huaweiflash.com/", color: "#FFC107" },
+        { name: "Unlock Tool", url: "https://unlocktool.net/", color: "#17A2B8" },
+        { name: "SP Flash Tool", url: "https://spflashtool.com/", color: "#6F42C1" },
+        { name: "Odin Tool", url: "https://odindownload.com/", color: "#0078D7" },
+        { name: "BD Tool", url: "https://xiaomibdteam.net/", color: "#28A745" },
+        { name: "CEIR Website", url: "https://www.ceir.gov.mm/", color: "#DC3545" },
+        { name: "Firmware Download", url: "https://firmwarefile.com/", color: "#FFC107" },
+        { name: "Reseller", url: "https://www.ttagsm.com/", color: "#0078D7" },
+        { name: "iCloud Check", url: "https://iunlocker.com/check_icloud.php", color: "#00d70b" },
+        { name: "All Model EDL test point", url: "https://www.egsmtool.com/testpoints", color: "#17A2B8" },
+        { name: "IOS firmware", url: "https://ipsw.me", color: "#DC3545" }
+    ];
+
+    const container = document.getElementById('tools-container');
+    document.getElementById('tool-count').textContent = `${tools.length} resources`;
+    container.replaceChildren();
+
+    
+    tools.forEach(tool => {
+        const btn = document.createElement('a');
+        btn.href = tool.url;
+        btn.target = "_blank";
+        btn.rel = "noopener noreferrer";
+        btn.className = "tool-btn";
+        btn.style.setProperty('--tool-color', tool.color);
+        btn.innerHTML = `<span class="tool-icon">${tool.name.charAt(0)}</span><span class="tool-name">${tool.name}</span><span class="tool-arrow">›</span>`;
+        container.appendChild(btn);
+    });
+})();
+</script>
+
+
+</body></html>
