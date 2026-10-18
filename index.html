@@ -32,7 +32,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            perspective: 1200px; height: 100vh;
             height: 100dvh;
             padding: max(28px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
             overflow: hidden;
@@ -226,7 +226,7 @@
             background: rgba(255, 255, 255, 0.055);
             text-align: left;
             box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.09);
-            -webkit-backdrop-filter: blur(16px) saturate(135%);
+            -webkit-backdrop-filter: blur(16px) saturate(135%); position: relative; overflow: hidden; transform-style: preserve-3d;
             backdrop-filter: blur(16px) saturate(135%);
         }
 
@@ -265,15 +265,15 @@
             transition: transform 0.2s ease, color 0.2s ease;
         }
 
-        .tool-btn:hover {
-            transform: translateY(-2px);
+        .tool-btn::before { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(115deg, rgba(255,255,255,.2), transparent 32%, rgba(255,255,255,.06) 70%, transparent); opacity: .45; pointer-events: none; } .tool-btn:hover {
+            transform: perspective(900px) translateY(-3px) rotateX(3deg) rotateY(-1deg);
             border-color: rgba(255, 255, 255, 0.34);
             box-shadow: 0 13px 28px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.16);
         }
 
-        .tool-btn:hover .tool-arrow {
+        .tool-btn:hover::before { opacity: .9; } .tool-btn:hover .tool-icon { transform: translateZ(12px) rotateY(-8deg); } .tool-btn:hover .tool-name { transform: translateZ(6px); } .tool-btn:hover .tool-arrow {
             color: var(--accent);
-            transform: translateX(3px);
+            transform: translateX(3px) translateZ(9px);
         }
 
         .tool-btn:focus-visible {
@@ -329,7 +329,7 @@
         <div class="status-badge"><span class="status-dot"></span> ONLINE</div>
     </div>
     <h1>Mobile Service Toolkit</h1>
-    <div class="section-label"><span>Quick access tools</span><span id="tool-count">14 resources</span></div>
+    <div class="section-label"><span>Quick access tools</span><span id="tool-count">18 resources</span></div>
     <div class="button-list" id="tools-container"></div>
     <noscript>
         <div class="button-list fallback-tools">
@@ -348,7 +348,7 @@
             <a href="https://www.egsmtool.com/testpoints" class="tool-btn" style="--tool-color: #17A2B8"><span class="tool-icon">A</span><span class="tool-name">All Model EDL test point</span><span class="tool-arrow">›</span></a>
         
 		</div>
-    </noscript>
+                <a href="https://account.apple.com/choose-country-region" class="tool-btn" style="--tool-color: #00d70b"><span class="tool-icon">I</span><span class="tool-name">ICloud Open</span><span class="tool-arrow">›</span></a>             <a href="https://mifirm.net/" class="tool-btn" style="--tool-color: #DC3545"><span class="tool-icon">X</span><span class="tool-name">Xiaomifirmware</span><span class="tool-arrow">›</span></a>             <a href="https://www.devicespecifications.com/" class="tool-btn" style="--tool-color: #6F42C1"><span class="tool-icon">D</span><span class="tool-name">Device Specifications</span><span class="tool-arrow">›</span></a>             <a href="https://kstw72.qzz.io/" class="tool-btn" style="--tool-color: #0078D7"><span class="tool-icon">K</span><span class="tool-name">Khant Sithu Win | K PLUS Mobile</span><span class="tool-arrow">›</span></a>             <a href="https://orangefox.download/" class="tool-btn" style="--tool-color: #FFC107"><span class="tool-icon">O</span><span class="tool-name">OrangeFox</span><span class="tool-arrow">›</span></a>         </noscript>
 </div>
 
 <script>
@@ -367,7 +367,7 @@
         { name: "Reseller", url: "https://www.ttagsm.com/", color: "#0078D7" },
         { name: "iCloud Check", url: "https://iunlocker.com/check_icloud.php", color: "#00d70b" },
         { name: "All Model EDL test point", url: "https://www.egsmtool.com/testpoints", color: "#17A2B8" },
-        { name: "IOS firmware", url: "https://ipsw.me", color: "#DC3545" }
+        { name: "IOS firmware", url: "https://ipsw.me", color: "#DC3545" }, { name: "ICloud Open", url: "https://account.apple.com/choose-country-region", color: "#00d70b" }, { name: "Device Specifications", url: "https://www.devicespecifications.com/", color: "#6F42C1" }, { name: "Khant Sithu Win | K PLUS Mobile", url: "https://kstw72.qzz.io/", color: "#0078D7" }, { name: "OrangeFox", url: "https://orangefox.download/", color: "#FFC107" }
     ];
 
     const container = document.getElementById('tools-container');
