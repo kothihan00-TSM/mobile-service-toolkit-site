@@ -48,6 +48,10 @@
             animation: page-enter 0.8s both;
         }
 
+        body[data-theme="dark"] {
+            color-scheme: dark;
+        }
+
         body[data-theme="light"] {
             color-scheme: light;
             --ink: #172238;
@@ -59,10 +63,6 @@
             --surface-strong: rgba(255, 255, 255, 0.7);
             --card-ink: #172238;
             --shadow: 0 32px 90px rgba(42, 62, 94, 0.18);
-        }
-
-        body[data-theme="dark"] {
-            color-scheme: dark;
         }
 
         body[data-theme="glass"] {
@@ -102,6 +102,12 @@
             bottom: -200px;
         }
 
+        body[data-theme="glass"]::before,
+        body[data-theme="glass"]::after {
+            opacity: 0.42;
+            animation: orb-drift 12s ease-in-out infinite alternate;
+        }
+
         body[data-theme="light"]::before {
             background: #59dfd0;
             opacity: 0.18;
@@ -110,12 +116,6 @@
         body[data-theme="light"]::after {
             background: #9d8bff;
             opacity: 0.16;
-        }
-
-        body[data-theme="glass"]::before,
-        body[data-theme="glass"]::after {
-            opacity: 0.42;
-            animation: orb-drift 12s ease-in-out infinite alternate;
         }
 
         .container {
@@ -157,6 +157,10 @@
             border-color: rgba(255, 255, 255, 0.28);
         }
 
+        body[data-theme="light"] h1 {
+            background-image: linear-gradient(100deg, #15243d 12%, #087f83 70%, #606ad7);
+        }
+
         .brand-row {
             display: flex;
             align-items: center;
@@ -169,6 +173,13 @@
             display: flex;
             align-items: center;
             gap: 12px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
         }
 
         .logo-mark {
@@ -247,16 +258,11 @@
             animation: text-enter 0.65s 0.24s both;
         }
 
-        body[data-theme="light"] h1 {
-            background-image: linear-gradient(100deg, #15243d 12%, #087f83 70%, #606ad7);
-        }
-
         .theme-switcher {
             display: flex;
-            align-self: flex-start;
             flex-wrap: wrap;
             gap: 7px;
-            margin: 0 0 20px;
+            margin: 0;
             padding: 5px;
             border: 1px solid var(--line);
             border-radius: 15px;
@@ -513,6 +519,25 @@
                 max-height: calc(100dvh - 36px);
             }
 
+            .brand-row {
+                flex-wrap: wrap;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .theme-switcher {
+                gap: 4px;
+                padding: 4px;
+            }
+
+            .theme-button {
+                padding: 6px 8px;
+                font-size: 11px;
+            }
+
             .status-badge {
                 padding: 6px 8px;
                 font-size: 9px;
@@ -547,14 +572,16 @@
                 <div class="brand-subtitle">Mobile Service Toolkit</div>
             </div>
         </div>
-        <div class="status-badge"><span class="status-dot"></span> ONLINE</div>
+        <div class="header-actions">
+            <div class="theme-switcher" role="group" aria-label="Choose appearance">
+                <button class="theme-button" type="button" data-theme-choice="dark" aria-pressed="true">Dark</button>
+                <button class="theme-button" type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+                <button class="theme-button" type="button" data-theme-choice="glass" aria-pressed="false">Liquid</button>
+            </div>
+            <div class="status-badge"><span class="status-dot"></span> ONLINE</div>
+        </div>
     </div>
     <h1>TSM Kit</h1>
-    <div class="theme-switcher" role="group" aria-label="Choose appearance">
-        <button class="theme-button" type="button" data-theme-choice="dark" aria-pressed="true">Dark</button>
-        <button class="theme-button" type="button" data-theme-choice="light" aria-pressed="false">Light</button>
-        <button class="theme-button" type="button" data-theme-choice="glass" aria-pressed="false">Liquid Glass</button>
-    </div>
     <div class="section-label"><span>Quick access tools</span><span id="tool-count">18 resources</span></div>
     <div class="button-list" id="tools-container"></div>
     <noscript>
