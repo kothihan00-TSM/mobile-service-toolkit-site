@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Mobile Service Toolkit</title>
+    <meta name="theme-color" content="#070d1b">
+    <title>TSM Kit</title>
     <style>
         :root {
             color-scheme: dark;
@@ -14,6 +15,11 @@
             --panel: rgba(14, 24, 42, 0.58);
             --line: rgba(255, 255, 255, 0.16);
             --accent: #70f0d0;
+            --page: linear-gradient(145deg, #070d1b, #111a31 52%, #090f20);
+            --surface: rgba(14, 24, 42, 0.58);
+            --surface-strong: rgba(255, 255, 255, 0.055);
+            --card-ink: #f7f9ff;
+            --shadow: 0 32px 90px rgba(0, 0, 0, 0.48);
         }
 
         * {
@@ -27,16 +33,49 @@
             background:
                 radial-gradient(ellipse at 18% 12%, rgba(25, 194, 176, 0.2), transparent 35%),
                 radial-gradient(ellipse at 86% 82%, rgba(118, 89, 255, 0.2), transparent 38%),
-                linear-gradient(145deg, #070d1b, #111a31 52%, #090f20);
+                var(--page);
             color: var(--ink);
             display: flex;
             justify-content: center;
             align-items: center;
-            perspective: 1200px; height: 100vh;
+            perspective: 1200px;
+            height: 100vh;
             height: 100dvh;
             padding: max(28px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(28px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
             overflow: hidden;
             overscroll-behavior: none;
+            transition: background 0.5s ease, color 0.35s ease;
+            animation: page-enter 0.8s both;
+        }
+
+        body[data-theme="light"] {
+            color-scheme: light;
+            --ink: #172238;
+            --muted: #5c6b83;
+            --line: rgba(45, 69, 105, 0.17);
+            --accent: #008f83;
+            --page: linear-gradient(145deg, #f4f8ff, #e9f3ff 52%, #f4edff);
+            --surface: rgba(255, 255, 255, 0.84);
+            --surface-strong: rgba(255, 255, 255, 0.7);
+            --card-ink: #172238;
+            --shadow: 0 32px 90px rgba(42, 62, 94, 0.18);
+        }
+
+        body[data-theme="dark"] {
+            color-scheme: dark;
+        }
+
+        body[data-theme="glass"] {
+            color-scheme: dark;
+            --ink: #f4f8ff;
+            --muted: #c2d0e5;
+            --line: rgba(255, 255, 255, 0.23);
+            --accent: #8bffe4;
+            --page: linear-gradient(145deg, #101b36, #182a4a 52%, #171333);
+            --surface: rgba(17, 29, 52, 0.38);
+            --surface-strong: rgba(255, 255, 255, 0.09);
+            --card-ink: #f7f9ff;
+            --shadow: 0 32px 90px rgba(0, 0, 0, 0.38);
         }
 
         body::before,
@@ -63,6 +102,22 @@
             bottom: -200px;
         }
 
+        body[data-theme="light"]::before {
+            background: #59dfd0;
+            opacity: 0.18;
+        }
+
+        body[data-theme="light"]::after {
+            background: #9d8bff;
+            opacity: 0.16;
+        }
+
+        body[data-theme="glass"]::before,
+        body[data-theme="glass"]::after {
+            opacity: 0.42;
+            animation: orb-drift 12s ease-in-out infinite alternate;
+        }
+
         .container {
             width: 100%;
             position: relative;
@@ -71,13 +126,15 @@
             max-height: calc(100dvh - 56px);
             display: flex;
             flex-direction: column;
-            background: var(--panel);
+            background: var(--surface);
             padding: clamp(24px, 5vw, 42px);
             border: 1px solid var(--line);
             border-radius: 30px;
-            box-shadow: 0 32px 90px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.2);
             -webkit-backdrop-filter: blur(30px) saturate(155%);
             backdrop-filter: blur(30px) saturate(155%);
+            transform-style: preserve-3d;
+            animation: card-enter 0.8s 0.08s both cubic-bezier(.2,.8,.2,1);
         }
 
         .container::before {
@@ -87,6 +144,17 @@
             border-radius: inherit;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.11), transparent 34%, transparent 70%, rgba(255, 255, 255, 0.035));
             pointer-events: none;
+            z-index: -1;
+        }
+
+        body[data-theme="light"] .container::before {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.72), transparent 38%, rgba(107, 143, 191, 0.04));
+        }
+
+        body[data-theme="glass"] .container {
+            -webkit-backdrop-filter: blur(36px) saturate(175%);
+            backdrop-filter: blur(36px) saturate(175%);
+            border-color: rgba(255, 255, 255, 0.28);
         }
 
         .brand-row {
@@ -114,6 +182,14 @@
             border: 1px solid rgba(255, 255, 255, 0.56);
             border-radius: 18px;
             box-shadow: 0 10px 30px rgba(52, 211, 180, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            transform-style: preserve-3d;
+            animation: logo-float 4s ease-in-out infinite;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .logo-mark:hover {
+            transform: perspective(500px) rotateY(18deg) rotateX(-10deg) translateZ(10px);
+            box-shadow: 0 16px 38px rgba(52, 211, 180, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.7);
         }
 
         .logo-mark svg {
@@ -125,6 +201,7 @@
             font-size: 15px;
             font-weight: 800;
             letter-spacing: 1.2px;
+            animation: text-enter 0.55s 0.2s both;
         }
 
         .brand-subtitle {
@@ -155,17 +232,69 @@
             background: var(--accent);
             border-radius: 50%;
             box-shadow: 0 0 10px var(--accent);
+            animation: status-pulse 2s ease-in-out infinite;
         }
 
         h1 {
             color: transparent;
-            background: linear-gradient(100deg, #ffffff 12%, #b9f8ee 70%, #a9bfff);
+            background: linear-gradient(100deg, var(--ink) 12%, #70dcca 70%, #9caeff);
             -webkit-background-clip: text;
             background-clip: text;
             font-size: clamp(24px, 5vw, 34px);
             line-height: 1.1;
             margin-bottom: 10px;
             letter-spacing: -0.8px;
+            animation: text-enter 0.65s 0.24s both;
+        }
+
+        body[data-theme="light"] h1 {
+            background-image: linear-gradient(100deg, #15243d 12%, #087f83 70%, #606ad7);
+        }
+
+        .theme-switcher {
+            display: flex;
+            align-self: flex-start;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin: 0 0 20px;
+            padding: 5px;
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            background: var(--surface-strong);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+            -webkit-backdrop-filter: blur(18px) saturate(145%);
+            backdrop-filter: blur(18px) saturate(145%);
+            transform: translateZ(10px);
+            animation: text-enter 0.65s 0.32s both;
+        }
+
+        .theme-button {
+            min-height: 36px;
+            padding: 7px 12px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            background: transparent;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .theme-button:hover {
+            transform: translateY(-2px) rotateX(8deg);
+            color: var(--ink);
+        }
+
+        .theme-button[aria-pressed="true"] {
+            color: var(--ink);
+            border-color: var(--line);
+            background: rgba(112, 240, 208, 0.14);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+        }
+
+        body[data-theme="light"] .theme-button[aria-pressed="true"] {
+            background: rgba(0, 143, 131, 0.1);
         }
 
         .section-label {
@@ -217,17 +346,78 @@
             padding: 10px 14px 10px 11px;
             font-size: 15px;
             font-weight: bold;
-            color: #f7f9ff;
+            color: var(--card-ink);
             text-decoration: none;
             border-radius: 17px;
             cursor: pointer;
             transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
             border: 1px solid rgba(255, 255, 255, 0.14);
-            background: rgba(255, 255, 255, 0.055);
+            background: var(--surface-strong);
             text-align: left;
             box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.09);
-            -webkit-backdrop-filter: blur(16px) saturate(135%); position: relative; overflow: hidden; transform-style: preserve-3d;
+            -webkit-backdrop-filter: blur(16px) saturate(135%);
             backdrop-filter: blur(16px) saturate(135%);
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            transform-style: preserve-3d;
+            animation: tool-enter 0.55s both cubic-bezier(.2,.75,.25,1);
+        }
+
+        .tool-btn:nth-child(1) { animation-delay: 0.12s; }
+        .tool-btn:nth-child(2) { animation-delay: 0.16s; }
+        .tool-btn:nth-child(3) { animation-delay: 0.2s; }
+        .tool-btn:nth-child(4) { animation-delay: 0.24s; }
+        .tool-btn:nth-child(5) { animation-delay: 0.28s; }
+        .tool-btn:nth-child(6) { animation-delay: 0.32s; }
+        .tool-btn:nth-child(7) { animation-delay: 0.36s; }
+        .tool-btn:nth-child(8) { animation-delay: 0.4s; }
+        .tool-btn:nth-child(n+9) { animation-delay: 0.44s; }
+
+        @keyframes page-enter {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes card-enter {
+            from { opacity: 0; transform: perspective(1200px) translateY(24px) rotateX(5deg) scale(.98); }
+            to { opacity: 1; transform: perspective(1200px) translateY(0) rotateX(0) scale(1); }
+        }
+
+        @keyframes tool-enter {
+            from { opacity: 0; translate: 0 14px; rotate: x 8deg; }
+            to { opacity: 1; translate: 0 0; rotate: x 0deg; }
+        }
+
+        @keyframes text-enter {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes logo-float {
+            0%, 100% { translate: 0 0; }
+            50% { translate: 0 -3px; }
+        }
+
+        @keyframes status-pulse {
+            0%, 100% { box-shadow: 0 0 7px var(--accent); }
+            50% { box-shadow: 0 0 16px var(--accent); }
+        }
+
+        @keyframes orb-drift {
+            from { transform: translate3d(-8px, -4px, 0) scale(.96); }
+            to { transform: translate3d(16px, 12px, 0) scale(1.06); }
+        }
+
+        .tool-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(115deg, rgba(255, 255, 255, 0.2), transparent 32%, rgba(255, 255, 255, 0.06) 70%, transparent);
+            opacity: 0.45;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
         }
 
         @supports (background: color-mix(in srgb, white, transparent)) {
@@ -243,35 +433,59 @@
             width: 37px;
             height: 37px;
             flex: 0 0 37px;
+            position: relative;
+            z-index: 1;
             color: var(--tool-color, #fff);
             background: rgba(255, 255, 255, 0.075);
             border: 1px solid rgba(255, 255, 255, 0.17);
             border-radius: 12px;
             font-size: 17px;
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            transition: transform 0.2s ease;
         }
 
         .tool-name {
             flex: 1;
+            position: relative;
+            z-index: 1;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            transition: transform 0.2s ease;
         }
 
         .tool-arrow {
+            position: relative;
+            z-index: 1;
             color: rgba(255, 255, 255, 0.58);
             font-size: 20px;
             line-height: 1;
             transition: transform 0.2s ease, color 0.2s ease;
         }
 
-        .tool-btn::before { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(115deg, rgba(255,255,255,.2), transparent 32%, rgba(255,255,255,.06) 70%, transparent); opacity: .45; pointer-events: none; } .tool-btn:hover {
+        .tool-btn:hover {
             transform: perspective(900px) translateY(-3px) rotateX(3deg) rotateY(-1deg);
             border-color: rgba(255, 255, 255, 0.34);
             box-shadow: 0 13px 28px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.16);
         }
 
-        .tool-btn:hover::before { opacity: .9; } .tool-btn:hover .tool-icon { transform: translateZ(12px) rotateY(-8deg); } .tool-btn:hover .tool-name { transform: translateZ(6px); } .tool-btn:hover .tool-arrow {
+        body[data-theme="light"] .tool-btn {
+            box-shadow: 0 8px 22px rgba(42, 62, 94, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.72);
+        }
+
+        .tool-btn:hover::before {
+            opacity: 0.9;
+        }
+
+        .tool-btn:hover .tool-icon {
+            transform: translateZ(12px) rotateY(-8deg);
+        }
+
+        .tool-btn:hover .tool-name {
+            transform: translateZ(6px);
+        }
+
+        .tool-btn:hover .tool-arrow {
             color: var(--accent);
             transform: translateX(3px) translateZ(9px);
         }
@@ -279,6 +493,11 @@
         .tool-btn:focus-visible {
             outline: 3px solid var(--accent);
             outline-offset: 3px;
+        }
+
+        .theme-button:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
         }
 
         @media (max-width: 480px) {
@@ -305,30 +524,37 @@
             *::before,
             *::after {
                 scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
             }
         }
     </style>
 </head>
-<body>
+<body data-theme="dark">
 
 <div class="container">
     <div class="brand-row">
         <div class="brand">
-            <div class="logo-mark" aria-label="Mobile Service Toolkit logo">
+            <div class="logo-mark" aria-label="TSM Kit logo">
                 <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <rect x="7" y="3" width="14" height="25" rx="3.5" stroke="currentColor" stroke-width="2.5"/>
                     <path d="M11 7h6M13 24h2M20 18l3.2-3.2 2.5 2.5-3.2 3.2-1.8.5-.5-1.8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
                 </svg>
             </div>
             <div>
-                <div class="brand-name">MOBILE SERVICE</div>
-                <div class="brand-subtitle">Professional field toolkit</div>
+                <div class="brand-name">TSM KIT</div>
+                <div class="brand-subtitle">Mobile Service Toolkit</div>
             </div>
         </div>
         <div class="status-badge"><span class="status-dot"></span> ONLINE</div>
     </div>
-    <h1>Mobile Service Toolkit</h1>
+    <h1>TSM Kit</h1>
+    <div class="theme-switcher" role="group" aria-label="Choose appearance">
+        <button class="theme-button" type="button" data-theme-choice="dark" aria-pressed="true">Dark</button>
+        <button class="theme-button" type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button class="theme-button" type="button" data-theme-choice="glass" aria-pressed="false">Liquid Glass</button>
+    </div>
     <div class="section-label"><span>Quick access tools</span><span id="tool-count">18 resources</span></div>
     <div class="button-list" id="tools-container"></div>
     <noscript>
@@ -345,10 +571,15 @@
             <a href="https://firmwarefile.com/" class="tool-btn" style="--tool-color: #FFC107"><span class="tool-icon">F</span><span class="tool-name">Firmware Download</span><span class="tool-arrow">›</span></a>
             <a href="https://www.ttagsm.com/" class="tool-btn" style="--tool-color: #0078D7"><span class="tool-icon">R</span><span class="tool-name">Reseller</span><span class="tool-arrow">›</span></a>
             <a href="https://iunlocker.com/check_icloud.php" class="tool-btn" style="--tool-color: #00d70b"><span class="tool-icon">i</span><span class="tool-name">iCloud Check</span><span class="tool-arrow">›</span></a>
+            <a href="https://account.apple.com/choose-country-region" class="tool-btn" style="--tool-color: #00d70b"><span class="tool-icon">I</span><span class="tool-name">ICloud Open</span><span class="tool-arrow">›</span></a>
             <a href="https://www.egsmtool.com/testpoints" class="tool-btn" style="--tool-color: #17A2B8"><span class="tool-icon">A</span><span class="tool-name">All Model EDL test point</span><span class="tool-arrow">›</span></a>
+            <a href="https://mifirm.net/" class="tool-btn" style="--tool-color: #DC3545"><span class="tool-icon">X</span><span class="tool-name">Xiaomifirmware</span><span class="tool-arrow">›</span></a>
+            <a href="https://www.devicespecifications.com/" class="tool-btn" style="--tool-color: #6F42C1"><span class="tool-icon">D</span><span class="tool-name">Device Specifications</span><span class="tool-arrow">›</span></a>
+            <a href="https://kstw72.qzz.io/" class="tool-btn" style="--tool-color: #0078D7"><span class="tool-icon">K</span><span class="tool-name">Khant Sithu Win | K PLUS Mobile</span><span class="tool-arrow">›</span></a>
+            <a href="https://orangefox.download/" class="tool-btn" style="--tool-color: #FFC107"><span class="tool-icon">O</span><span class="tool-name">OrangeFox</span><span class="tool-arrow">›</span></a>
         
 		</div>
-                <a href="https://account.apple.com/choose-country-region" class="tool-btn" style="--tool-color: #00d70b"><span class="tool-icon">I</span><span class="tool-name">ICloud Open</span><span class="tool-arrow">›</span></a>             <a href="https://mifirm.net/" class="tool-btn" style="--tool-color: #DC3545"><span class="tool-icon">X</span><span class="tool-name">Xiaomifirmware</span><span class="tool-arrow">›</span></a>             <a href="https://www.devicespecifications.com/" class="tool-btn" style="--tool-color: #6F42C1"><span class="tool-icon">D</span><span class="tool-name">Device Specifications</span><span class="tool-arrow">›</span></a>             <a href="https://kstw72.qzz.io/" class="tool-btn" style="--tool-color: #0078D7"><span class="tool-icon">K</span><span class="tool-name">Khant Sithu Win | K PLUS Mobile</span><span class="tool-arrow">›</span></a>             <a href="https://orangefox.download/" class="tool-btn" style="--tool-color: #FFC107"><span class="tool-icon">O</span><span class="tool-name">OrangeFox</span><span class="tool-arrow">›</span></a>         </noscript>
+    </noscript>
 </div>
 
 <script>
@@ -366,8 +597,12 @@
         { name: "Firmware Download", url: "https://firmwarefile.com/", color: "#FFC107" },
         { name: "Reseller", url: "https://www.ttagsm.com/", color: "#0078D7" },
         { name: "iCloud Check", url: "https://iunlocker.com/check_icloud.php", color: "#00d70b" },
+        { name: "ICloud Open", url: "https://account.apple.com/choose-country-region", color: "#00d70b" },
         { name: "All Model EDL test point", url: "https://www.egsmtool.com/testpoints", color: "#17A2B8" },
-        { name: "IOS firmware", url: "https://ipsw.me", color: "#DC3545" }, { name: "ICloud Open", url: "https://account.apple.com/choose-country-region", color: "#00d70b" }, { name: "Device Specifications", url: "https://www.devicespecifications.com/", color: "#6F42C1" }, { name: "Khant Sithu Win | K PLUS Mobile", url: "https://kstw72.qzz.io/", color: "#0078D7" }, { name: "OrangeFox", url: "https://orangefox.download/", color: "#FFC107" }
+        { name: "IOS firmware", url: "https://ipsw.me", color: "#DC3545" },
+        { name: "Device Specifications", url: "https://www.devicespecifications.com/", color: "#6F42C1" },
+        { name: "Khant Sithu Win | K PLUS Mobile", url: "https://kstw72.qzz.io/", color: "#0078D7" },
+        { name: "OrangeFox", url: "https://orangefox.download/", color: "#FFC107" }
     ];
 
     const container = document.getElementById('tools-container');
@@ -388,5 +623,29 @@
 })();
 </script>
 
+<script>
+(() => {
+    const themeButtons = document.querySelectorAll('[data-theme-choice]');
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    const themeColors = { dark: '#070d1b', light: '#f4f8ff', glass: '#101b36' };
+
+    const setTheme = theme => {
+        if (!Object.hasOwn(themeColors, theme)) return;
+        document.body.dataset.theme = theme;
+        themeColor.content = themeColors[theme];
+        themeButtons.forEach(button => {
+            button.setAttribute('aria-pressed', String(button.dataset.themeChoice === theme));
+        });
+        localStorage.setItem('tsm-kit-theme', theme);
+    };
+
+    const savedTheme = localStorage.getItem('tsm-kit-theme');
+    if (savedTheme && Object.hasOwn(themeColors, savedTheme)) setTheme(savedTheme);
+
+    themeButtons.forEach(button => {
+        button.addEventListener('click', () => setTheme(button.dataset.themeChoice));
+    });
+})();
+</script>
 
 </body></html>
